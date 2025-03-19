@@ -1,0 +1,25 @@
+**/__pycache__/
+.mypy_cache/
+.env
+.venv
+test_data_db.sql
+.idea
+
+# Игнорировать скомпилированные Python-файлы
+*.pyc
+*.pyo
+*.pyd
+
+# Игнорировать виртуальное окружение
+.venv/
+venv/
+env/
+
+# Игнорировать логи и кэш
+*.log
+*.cache
+
+# Игнорировать файлы сборки и дистрибуции
+build/
+dist/
+*.egg-info/
