@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:17
+    container_name: vkr_db
+    env_file:
+      - .env
+
+  vkr:
+    image: vkr_app
+    build:
+      context: .
+    container_name: vkr_app
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - 7777:8000

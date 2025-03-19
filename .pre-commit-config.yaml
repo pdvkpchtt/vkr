@@ -1,0 +1,28 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0  # Укажите актуальную версию
+    hooks:
+      - id: trailing-whitespace  # Удаляет пробелы в конце строк
+      - id: end-of-file-fixer    # Убеждается, что файл заканчивается на новую строку
+      - id: check-yaml           # Проверяет синтаксис YAML файлов
+      - id: check-added-large-files  # Проверяет, что не добавляются большие файлы
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.11.0  # Укажите актуальную версию
+    hooks:
+      - id: ruff  # Форматирует код с помощью ruff
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0  # Укажите актуальную версию
+    hooks:
+      - id: mypy  # Сортирует импорты
+
+#  - repo: https://github.com/PyCQA/flake8
+#    rev: 6.1.0  # Укажите актуальную версию
+#    hooks:
+#      - id: flake8  # Проверяет код на соответствие PEP8
+
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v1.5.1  # Укажите актуальную версию
+#    hooks:
+#      - id: mypy  # Проверяет типы с помощью mypy
