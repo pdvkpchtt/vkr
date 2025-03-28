@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.models.models import Base # noqa
+from app.database import Base # noqa
 from app.models.models import * # noqa
 # from app.models.drivers import Driver    # noqa
 # from app.models.car import Car    # noqa
@@ -19,7 +19,7 @@ from app.config import settings
 # access to the values within the .ini file in use.
 config = context.config
 
-config.set_main_option("sqlalchemy.url", f"{settings.DATABASE_URL_asyncpg}?async_fallback=True")
+config.set_main_option("sqlalchemy.url",  settings.DATABASE_URL_asyncpg + "?async_fallback=True")
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

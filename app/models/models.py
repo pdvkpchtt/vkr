@@ -1,11 +1,11 @@
 from datetime import date
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.database import Base
-from datetime import datetime
 from enum import StrEnum, auto
 
 from sqlalchemy import ForeignKey, DateTime, func
 
+# data = datetime.now(timezone.utc)
 
 class Car(Base):
     __tablename__ = "car"
@@ -27,8 +27,9 @@ class Driver(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     phone: Mapped[int]
-    email: Mapped[str]
+    email: Mapped[str] = mapped_column(unique=True)
     car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), unique=True)
+    hashed_password: Mapped[str] = mapped_column(nullable=True)
 
     car: Mapped["Car"] = relationship("Car", back_populates="driver")
     bid: Mapped[list["Bid"]] = relationship("Bid", back_populates="driver")
@@ -46,7 +47,7 @@ class Bid(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     description: Mapped[str]
     state: Mapped[State]
-    date: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    date: Mapped[DateTime] = mapped_column(DateTime, default=func.now())
     mechanic_id: Mapped[int] = mapped_column(ForeignKey("mechanic.id", ondelete="CASCADE"))
     driver_id: Mapped[int] = mapped_column(ForeignKey("driver.id", ondelete="CASCADE"))
 
@@ -78,7 +79,8 @@ class Mechanic(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     phone: Mapped[int]
-    email: Mapped[str]
+    email: Mapped[str] = mapped_column(unique=True)
+    hashed_password: Mapped[str] = mapped_column(nullable=True)
 
     history: Mapped[list["History"]] = relationship("History", back_populates="mechanic")
     bid: Mapped[list["Bid"]] = relationship("Bid", back_populates="mechanic")

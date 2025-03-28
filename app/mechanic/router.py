@@ -1,40 +1,81 @@
-from fastapi import APIRouter
+from datetime import datetime, timezone
+from typing import List
 
-from app.DAO.base import BaseDAO
-from app.driverss.daos import BidDAO
+from fastapi import APIRouter, Response, Depends
+
+from app.auth import Auth
+from app.driverss.schemas import SUserAuth, SGetPartsBids, SGetBid
+from app.exceptions import NotFound, UserAlreadyExistException
 from app.mechanic.dao import MechanicDAO
+from app.models.models import Mechanic
+from app.driverss.daos import BidDAO, DriverDAO, HistoryDAO
 
 router = APIRouter(
-    prefix="/driver",
+    prefix="/mechanic",
+    tags=["Механик"]
 )
 
-# # ручка по добавлению механиками истории обслуживания
-# @router.post("")
-# async def add_history(
-#     car_id: int,
-#     description: str,
-#     mechanic_id: int,
-# ):
-#     await F("54")
-#
-# async def F(car: int): ...
-
-
-# ручка по измненению bid
-@router.post("")
-async def done_task(
-    bid_id,
-    car_id: int,
+# ручка по добавлению механиками истории обслуживания и измненению bid
+@router.post("/add_history", response_model=str)
+async def add_history(
+    bid_id: int,
+    run: int,
     description: str,
-    status: str,
-    run: str,
-    mechanic_id: int,
-): ...
+    mechanic: Mechanic = Depends(Auth.get_current_user),
+    # background_tasks: BackgroundTasks,
+):
+    Auth.check_type_mechanic(mechanic)
+    bid =  await BidDAO.find_one_or_none(id=bid_id)
+    driver = await DriverDAO.find_one_or_none(id=bid.driver_id)
+    if not bid or not driver:
+        raise NotFound
+
+    await BidDAO.update_bid(bid_id)
+    data = datetime.now(timezone.utc)
+    await HistoryDAO.add(date=data, run=run, description=description, mechanic_id=mechanic.id, car_id=driver.car_id)
+    # Отправка на почту письма
+    # BackgroundTasks.add_task(send_driver_confirmation_email,bid_id, description, driver.email)
+    return "Данные отправлены"
 
 # Ручка просмотра тасок
-@router.get("/bids")
+@router.get("/bids", response_model=List[SGetPartsBids])
 async def get_bids(
-    mechanic_id: int = 1
+    mechanic: Mechanic = Depends(Auth.get_current_user),
 ):
-    result = await BidDAO.find_all(mechanic_id=mechanic_id)
+    Auth.check_type_mechanic(mechanic)
+    result = await BidDAO.get_part_bids(mechanic_id=mechanic.id)
     return result
+
+# Ручка просмотра таски
+@router.get("/bids/{bid_id}", response_model=SGetBid) #, response_model=SGetBid
+async def get_bid_id(
+    bid_id: int,
+    mechanic: Mechanic = Depends(Auth.get_current_user),
+):
+    Auth.check_type_mechanic(mechanic)
+    result = await BidDAO.find_one_or_none(id=bid_id)
+    return result
+
+# ручка на регистрацию
+@router.post("/register")
+async def register_driver(
+    user_data: SUserAuth
+):
+    existing_user = await MechanicDAO.find_one_or_none(email=user_data.email)
+    if existing_user is None:
+        raise NotFound
+    if existing_user.hashed_password is not None:
+        raise UserAlreadyExistException
+    hashed_password = Auth.get_password_hash(user_data.password)
+    await MechanicDAO.update_password(email=user_data.email, password=hashed_password)
+    return "Регистрация прошла успешно!"
+
+@router.post("/login")
+async def login(
+    response: Response,
+    user_data: SUserAuth
+):
+    user = await Auth.authenticate_user(user_data.email, user_data.password, MechanicDAO)
+    access_token = Auth.create_access_token({"sub": str(user.id), "type": "mechanic"})  #передаём строку
+    response.set_cookie("app_token", access_token, httponly=True)
+    return access_token

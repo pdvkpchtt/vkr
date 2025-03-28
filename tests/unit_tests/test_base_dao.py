@@ -1,7 +1,6 @@
 from app.driverss.daos import DriverDAO
 import pytest
 
-
 @pytest.mark.parametrize(
     ("name,phone,email,car_id"),
     [

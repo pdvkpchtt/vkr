@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 
 
-class BookingException(HTTPException):  # <-- наследуемся от HTTPException, который наследован от Exception
+class AppException(HTTPException):  # <-- наследуемся от HTTPException, который наследован от Exception
     status_code = 500  # <-- задаем значения по умолчанию
     detail = ""
 
@@ -9,36 +9,34 @@ class BookingException(HTTPException):  # <-- наследуемся от HTTPEx
         super().__init__(status_code=self.status_code, detail=self.detail)
 
 
-class UserAlreadyExistException(BookingException):  # <-- обязательно наследуемся от нашего класса
+class UserAlreadyExistException(AppException):  # <-- обязательно наследуемся от нашего класса
     status_code=status.HTTP_409_CONFLICT
     detail="Пользователь уже существует"
 
-class IncorrectEmailOrPasswordExceprion(BookingException):  # <-- обязательно наследуемся от нашего класса
+class IncorrectEmailOrPasswordExceprion(AppException):  # <-- обязательно наследуемся от нашего класса
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Неверная почта или пароль"
 
-class TokenExpireException(BookingException):  # <-- обязательно наследуемся от нашего класса
+class TokenExpireException(AppException):  # <-- обязательно наследуемся от нашего класса
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Токен истёк"
 
-class TokenAbsentException(BookingException):  # <-- обязательно наследуемся от нашего класса
+class TokenAbsentException(AppException):  # <-- обязательно наследуемся от нашего класса
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Токен отсутсвует"
 
-class IncorrectTokenFormatException(BookingException):  # <-- обязательно наследуемся от нашего класса
+class IncorrectTokenFormatException(AppException):  # <-- обязательно наследуемся от нашего класса
     status_code=status.HTTP_401_UNAUTHORIZED
-    detail="Некорректный формат токена"
+    detail="Некорректный формат токена. Отсутствие доступа по роли или отсутсвие токена"
 
-class UserIsNotPresentException(BookingException):  # <-- обязательно наследуемся от нашего класса
+class UserIsNotPresentException(AppException):  # <-- обязательно наследуемся от нашего класса
     status_code=status.HTTP_401_UNAUTHORIZED
+    detail = "Некорректный формат токена"
 
-class RoomCannotBeBookes(BookingException):
+class RoomCannotBeBookes(AppException):
     status_code = status.HTTP_409_CONFLICT
     detail = "Не осталось свободных номеров"
 
-class NotFound(BookingException):
+class NotFound(AppException):
     status_code = status.HTTP_404_NOT_FOUND
     detail = "Не найден пользователь"
-
-
-

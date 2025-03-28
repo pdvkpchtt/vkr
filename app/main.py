@@ -3,8 +3,10 @@ import uvicorn
 
 from app.admin.auth_admin import authentication_backend
 from app.admin.views import CarAdmin, HistoryAdmin, DriverAdmin, MechanicAdmin, BidAdmin
-from app.driverss.router import router
-from app.mechanic.router import router as r1
+from app.driverss.router import router as r1
+from app.mechanic.router import router as r2
+from app.all_routers import router as r3
+
 from sqladmin import Admin
 from app.database import engine
 
@@ -39,8 +41,9 @@ admin.add_view(BidAdmin)
 # 4. Отправка фоновых задач механику и водителю
 # 5. Добавить роли для доступа к апи. Разные точки авторизации. Войти как работодатель.
 
-app.include_router(router)
 app.include_router(r1)
+app.include_router(r2)
+app.include_router(r3)
 
 if __name__ == '__main__':
     uvicorn.run("main:app", reload=True)

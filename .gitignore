@@ -1,34 +1,47 @@
-/venv
-**/__pycache__/
-.mypy_cache/
-.env
-.venv
-test_data_db.sql
-.idea
-
-# Игнорировать скомпилированные Python-файлы
-*.pyc
-*.pyo
+### Python ###
+# Базовые правила для Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
 *.pyd
 
-# Игнорировать виртуальное окружение
+# Виртуальные окружения
 .venv/
 venv/
 env/
+ENV/
 
-# Игнорировать логи и кэш
+# Кэши и логи
+.mypy_cache/
+.cache/
 *.log
-.idea/
-**/__pycache__/
-.cache
-/.env
-/.mypy_cache/
-/test_data_db.sql
-/app/tasks/__pycache__/
-/app/__pycache__/
 *.cache
 
-# Игнорировать файлы сборки и дистрибуции
+### IDE ###
+.idea/
+.vscode/
+*.swp
+*.swo
+
+### Environment ###
+.env
+.env[.local]
+.env.*
+!.env.example
+
+### Database ###
+*.sql
+*.sqlite
+*.db
+
+### Build & Distribution ###
 build/
 dist/
 *.egg-info/
+*.whl
+
+### Test files ###
+#test_data_*
+!test_*.py

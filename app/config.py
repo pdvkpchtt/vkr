@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Literal
 from dotenv import find_dotenv
-
+# mypy: ignore-errors
 class Settings(BaseSettings):
     MODE: Literal["DEV", "TEST", "PROD"]
 
@@ -20,10 +20,10 @@ class Settings(BaseSettings):
     smtp_pass:str
 
     @property
-    def DATABASE_URL_asyncpg(self):
+    def DATABASE_URL_asyncpg(self) -> str:
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.dbname}"
 
-    model_config = SettingsConfigDict(env_file=find_dotenv("vkr/.env"))
+    model_config = SettingsConfigDict(env_file=find_dotenv("../.env"))
 
 
 settings = Settings()

@@ -12,7 +12,7 @@ fastapi = "^0.115.11"
 asyncpg = "^0.30.0"
 gunicorn = "^23.0.0"
 psycopg = "^3.2.5"
-pydantic = "^2.10.6"
+pydantic = {extras = ["email"], version = "^2.10.6"}
 pydantic-settings = "^2.8.1"
 uvicorn = "^0.34.0"
 requests = "^2.32.3"
@@ -23,6 +23,7 @@ passlib = "^1.7.4"
 python-jose = "^3.4.0"
 bcrypt = "^4.3.0"
 itsdangerous = "^2.2.0"
+types-passlib = "^1.7.7.20250322"
 
 
 
@@ -36,6 +37,7 @@ pytest-cov = "^6.0.0"
 pytest-asyncio = "^0.25.3"
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = true
 asyncio_mode = "auto"
 testpaths = "tests"
 addopts = "-p no:warnings"

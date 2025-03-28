@@ -11,4 +11,4 @@ RUN poetry config virtualenvs.create false && poetry install --no-dev --no-inter
 
 COPY . .
 
-CMD ["python", "main.py",]
+CMD ["python", "main.py"]

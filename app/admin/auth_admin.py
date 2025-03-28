@@ -1,21 +1,20 @@
-from typing import Optional
 
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from app.auth import authenticate_user, create_access_token, get_current_user
+from app.auth import Auth
+from app.driverss.daos import AdminDAO
 
 
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
         email, password = form["username"], form["password"]
-
-        user = await authenticate_user(email, password)
+        user = await Auth.authenticate_user(str(email), str(password), AdminDAO)
         if user:
-            access_token = create_access_token({"sub": str(user.id)})
-            request.session.update({"token": access_token})
+            access_token = Auth.create_access_token({"sub": str(user.id), "type": "admin"})
+            request.session.update({"app_token": access_token})
 
         return True
 
@@ -23,13 +22,13 @@ class AdminAuth(AuthenticationBackend):
         request.session.clear()
         return True
 
-    async def authenticate(self, request: Request) -> Optional[RedirectResponse]:
-        token = request.session.get("token")
+    async def authenticate(self, request: Request) -> RedirectResponse | bool:
+        token = request.session.get("app_token")
 
         if not token:
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
 
-        user = await get_current_user(token)
+        user = await Auth.get_current_user(token)
         # logger.debug(f"{user=}")
         if not user:
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
