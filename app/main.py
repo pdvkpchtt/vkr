@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
+from fastapi.middleware.cors import CORSMiddleware
 from app.admin.auth_admin import authentication_backend
 from app.admin.views import CarAdmin, HistoryAdmin, DriverAdmin, MechanicAdmin, BidAdmin
 from app.driverss.router import router as r1
@@ -13,6 +14,18 @@ from app.database import engine
 app = FastAPI()
 
 admin = Admin(app, engine, authentication_backend=authentication_backend)
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 admin.add_view(CarAdmin)
 admin.add_view(HistoryAdmin)
