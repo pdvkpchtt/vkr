@@ -105,5 +105,13 @@ class Auth:
 
     @staticmethod
     def check_type_mechanic_or_driver(model: Base) -> None:
+        if isinstance(model, Mechanic):
+            return 'mecanic'
+        if isinstance(model, Driver):
+            return 'driver'
         if not (isinstance(model, Mechanic)) and not (isinstance(model, Driver)):
             raise UserIsNotPresentException
+        
+
+        
+

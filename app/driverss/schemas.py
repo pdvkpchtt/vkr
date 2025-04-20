@@ -11,6 +11,7 @@ class SUserAuth(BaseModel):
 class SGetPartsBids(BaseModel):
     id: int
     state: State
+    description: str
 
 class SGetStatusBid(BaseModel):
     state: str
@@ -36,9 +37,11 @@ class SDriver(BaseModel):
     name: str
     phone: int
     email: str
+    role: str
 
 class SMechanic(BaseModel):
     id: int
     name: str
     phone: int
     email: str
+    role: str

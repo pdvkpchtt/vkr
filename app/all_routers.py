@@ -18,5 +18,8 @@ async def logout_user(response: Response) -> None:
 async def read_users_me(
         user: Base = Depends(Auth.get_current_user)
 ):
-    Auth.check_type_mechanic_or_driver(user)
+    role = Auth.check_type_mechanic_or_driver(user)
+
+    user.role = role
+
     return user
