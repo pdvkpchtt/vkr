@@ -52,6 +52,8 @@ async def get_driver_bids(
     res = await BidDAO.find_all(driver_id=driver.id)
     return res
 
+
+#!!!!!!!!!!
 # ручка на проверки статуса
 @router.get("/get_status", response_model=SGetStatusBid) #, response_model=SGetStatusBid
 async def get_status_bid(

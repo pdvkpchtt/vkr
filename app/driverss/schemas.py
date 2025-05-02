@@ -35,13 +35,13 @@ class SGetBid(BaseModel):
 class SDriver(BaseModel):
     id: int
     name: str
-    phone: int
+    phone: str
     email: str
     role: str
 
 class SMechanic(BaseModel):
     id: int
     name: str
-    phone: int
+    phone: str
     email: str
     role: str

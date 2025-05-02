@@ -14,6 +14,13 @@ class Car(Base):
     mark: Mapped[str]
     model: Mapped[str]
     year: Mapped[int]
+    power: Mapped[int] = mapped_column(nullable=True)
+    v_dvig: Mapped[float] = mapped_column(nullable=True)
+    rasxod: Mapped[int] = mapped_column(nullable=True)
+    type_kpp: Mapped[str] = mapped_column(nullable=True)
+    gruzopod: Mapped[int] = mapped_column(nullable=True)
+    gos_nomer: Mapped[int] = mapped_column(nullable=True)
+
 
     driver: Mapped["Driver"] = relationship("Driver", back_populates="car", uselist=False)
     history: Mapped[list["History"]] = relationship("History", back_populates="car")
@@ -26,10 +33,12 @@ class Driver(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
-    phone: Mapped[int]
+    phone: Mapped[str]
     email: Mapped[str] = mapped_column(unique=True)
     car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), unique=True)
     hashed_password: Mapped[str] = mapped_column(nullable=True)
+    stag: Mapped[int] = mapped_column(nullable=True)
+
 
     car: Mapped["Car"] = relationship("Car", back_populates="driver")
     bid: Mapped[list["Bid"]] = relationship("Bid", back_populates="driver")
@@ -78,9 +87,11 @@ class Mechanic(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
-    phone: Mapped[int]
+    phone: Mapped[str]
     email: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str] = mapped_column(nullable=True)
+    stag: Mapped[int] = mapped_column(nullable=True)
+
 
     history: Mapped[list["History"]] = relationship("History", back_populates="mechanic")
     bid: Mapped[list["Bid"]] = relationship("Bid", back_populates="mechanic")

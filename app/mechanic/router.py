@@ -8,7 +8,7 @@ from app.driverss.schemas import SUserAuth, SGetPartsBids, SGetBid
 from app.exceptions import NotFound, UserAlreadyExistException
 from app.mechanic.dao import MechanicDAO
 from app.models.models import Mechanic
-from app.driverss.daos import BidDAO, DriverDAO, HistoryDAO
+from app.driverss.daos import BidDAO, DriverDAO, HistoryDAO, CarDAO
 
 router = APIRouter(
     prefix="/mechanic",
@@ -37,7 +37,7 @@ async def add_history(
     # BackgroundTasks.add_task(send_driver_confirmation_email,bid_id, description, driver.email)
     return "Данные отправлены"
 
-# Ручка просмотра тасок
+# Ручка просмотра тасок которые не готовы
 @router.get("/bids", response_model=List[SGetPartsBids])
 async def get_bids(
     mechanic: Mechanic = Depends(Auth.get_current_user),
@@ -46,15 +46,22 @@ async def get_bids(
     result = await BidDAO.get_part_bids(mechanic_id=mechanic.id)
     return result
 
+
+#!!!!!!!!!!
 # Ручка просмотра таски
-@router.get("/bids/{bid_id}", response_model=SGetBid) #, response_model=SGetBid
+@router.get("/bids/{bid_id}") #, response_model=SGetBid
 async def get_bid_id(
     bid_id: int,
     mechanic: Mechanic = Depends(Auth.get_current_user),
 ):
     Auth.check_type_mechanic(mechanic)
-    result = await BidDAO.find_one_or_none(id=bid_id)
-    return result
+    bib_res = await BidDAO.find_one_or_none(id=bid_id)
+    driver_res = await DriverDAO.find_one_or_none(id=bib_res.driver_id)
+    car_res = await CarDAO.find_one_or_none(id=driver_res.car_id)
+    return {"bid":bib_res,
+            "driver": driver_res,
+            "car": car_res,
+            }
 
 # ручка на регистрацию
 @router.post("/register")
