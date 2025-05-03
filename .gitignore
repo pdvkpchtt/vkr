@@ -1,6 +1,7 @@
 ### Python ###
 # Базовые правила для Python
 __pycache__/
+**/__pycache__
 *.py[cod]
 *.so
 *.egg
@@ -18,6 +19,8 @@ ENV/
 .cache/
 *.log
 *.cache
+**/__pycache__/
+*$py.class
 
 ### IDE ###
 .idea/
@@ -39,9 +42,11 @@ ENV/
 ### Build & Distribution ###
 build/
 dist/
-*.egg-info/
 *.whl
 
 ### Test files ###
 #test_data_*
 !test_*.py
+app/driverss/__pycache__
+app/mechanic/__pycache__
+app/models/__pycache__
