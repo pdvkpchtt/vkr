@@ -14,12 +14,12 @@ class Car(Base):
     mark: Mapped[str]
     model: Mapped[str]
     year: Mapped[int]
-    power: Mapped[int] = mapped_column(nullable=True)
+    power: Mapped[float] = mapped_column(nullable=True)
     v_dvig: Mapped[float] = mapped_column(nullable=True)
-    rasxod: Mapped[int] = mapped_column(nullable=True)
+    rasxod: Mapped[float] = mapped_column(nullable=True)
     type_kpp: Mapped[str] = mapped_column(nullable=True)
     gruzopod: Mapped[int] = mapped_column(nullable=True)
-    gos_nomer: Mapped[int] = mapped_column(nullable=True)
+    gos_nomer: Mapped[str] = mapped_column(nullable=True)
 
 
     driver: Mapped["Driver"] = relationship("Driver", back_populates="car", uselist=False)
@@ -38,6 +38,7 @@ class Driver(Base):
     car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), unique=True)
     hashed_password: Mapped[str] = mapped_column(nullable=True)
     stag: Mapped[int] = mapped_column(nullable=True)
+    bithday: Mapped[date] = mapped_column(nullable=True)
 
 
     car: Mapped["Car"] = relationship("Car", back_populates="driver")
@@ -75,6 +76,8 @@ class History(Base):
     description: Mapped[str]
     mechanic_id: Mapped[int] = mapped_column(ForeignKey("mechanic.id", ondelete="CASCADE"))
     car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"))
+    work_hours: Mapped[float] = mapped_column(nullable=True)
+    spares: Mapped[str] = mapped_column(nullable=True)
 
     car: Mapped["Car"] = relationship("Car", back_populates="history")
     mechanic: Mapped["Mechanic"] = relationship("Mechanic", back_populates="history")
@@ -91,6 +94,7 @@ class Mechanic(Base):
     email: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str] = mapped_column(nullable=True)
     stag: Mapped[int] = mapped_column(nullable=True)
+    bithday: Mapped[date] = mapped_column(nullable=True)
 
 
     history: Mapped[list["History"]] = relationship("History", back_populates="mechanic")

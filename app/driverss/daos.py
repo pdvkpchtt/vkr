@@ -32,7 +32,8 @@ class BidDAO(BaseDAO):
                 select(
                      Bid.id,
                      Bid.state,
-                     Bid.description
+                     Bid.description,
+                     Bid.date,
                 )
                 .select_from(Bid)
                 .where(Bid.mechanic_id == mechanic_id)

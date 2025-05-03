@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import List
 
-from fastapi import APIRouter, Response, Depends
+from fastapi import APIRouter, Response, Depends, BackgroundTasks
 
 from app.auth import Auth
 from app.driverss.schemas import SUserAuth, SGetPartsBids, SGetBid
@@ -9,6 +9,7 @@ from app.exceptions import NotFound, UserAlreadyExistException
 from app.mechanic.dao import MechanicDAO
 from app.models.models import Mechanic
 from app.driverss.daos import BidDAO, DriverDAO, HistoryDAO, CarDAO
+from app.tasks.tasks import send_driver_confirmation_email
 
 router = APIRouter(
     prefix="/mechanic",
@@ -21,8 +22,10 @@ async def add_history(
     bid_id: int,
     run: int,
     description: str,
+    work_hours: float,
+    spares: str,
+    background_tasks: BackgroundTasks,
     mechanic: Mechanic = Depends(Auth.get_current_user),
-    # background_tasks: BackgroundTasks,
 ):
     Auth.check_type_mechanic(mechanic)
     bid =  await BidDAO.find_one_or_none(id=bid_id)
@@ -32,12 +35,20 @@ async def add_history(
 
     await BidDAO.update_bid(bid_id)
     data = datetime.now(timezone.utc)
-    await HistoryDAO.add(date=data, run=run, description=description, mechanic_id=mechanic.id, car_id=driver.car_id)
+    await HistoryDAO.add(
+        date=data,
+        run=run,
+        description=description,
+        mechanic_id=mechanic.id,
+        car_id=driver.car_id,
+        work_hours=work_hours,
+        spares=spares,
+    )
     # Отправка на почту письма
-    # BackgroundTasks.add_task(send_driver_confirmation_email,bid_id, description, driver.email)
-    return "Данные отправлены"
+    background_tasks.add_task(send_driver_confirmation_email,bid_id, description, driver.email)
+    return "Данные отправлены. Информация о заявке отправлена на почту водителю"
 
-# Ручка просмотра тасок которые не готовы
+# Ручка просмотра частичных данных тасок
 @router.get("/bids", response_model=List[SGetPartsBids])
 async def get_bids(
     mechanic: Mechanic = Depends(Auth.get_current_user),
