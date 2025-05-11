@@ -6,7 +6,7 @@ authors = ["Глеб Храмов <assaa2015@mal.ru>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 sqlalchemy = "^2.0.38"
 fastapi = "^0.115.11"
 asyncpg = "^0.30.0"

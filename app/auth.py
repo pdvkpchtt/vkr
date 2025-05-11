@@ -86,6 +86,8 @@ class Auth:
         user = await user_type_dao.find_by_id(int(user_id))
         if not user:
             raise UserIsNotPresentException
+        
+        user.role = user_type
         return user
 
     @staticmethod
